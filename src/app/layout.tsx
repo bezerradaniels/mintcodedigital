@@ -15,18 +15,18 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mintcode — Crescimento que se mede",
+  title: "Mintcode · Crecimiento que se mide. Y se celebra.",
   description:
-    "Construímos seu site, colocamos sua marca nas buscas e nas respostas de IA, investimos em tráfego pago — e medimos cada real com BI.",
+    "Sitios web, SEO, AEO, GEO, medios pagos y BI para empresas de toda América Latina.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#141414",
+  themeColor: "#FFF4E4",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${jakarta.variable} ${jetbrains.variable} antialiased`}>
+    <html lang="es" className={`${jakarta.variable} ${jetbrains.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );
