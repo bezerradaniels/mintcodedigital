@@ -8,6 +8,10 @@ const IP_PER_HOUR = 10;
 
 const ipLog = new Map<string, number[]>();
 
+function cleanEnv(val: string | undefined): string {
+  return (val ?? "").trim().replace(/^["']|["']$/g, "");
+}
+
 function text(val: unknown, max: number): string {
   const s = typeof val === "string" ? val.trim() : "";
   return s.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "").slice(0, max);
@@ -163,7 +167,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const apiKey = process.env.RESEND_API_KEY || "";
+  const apiKey = cleanEnv(process.env.RESEND_API_KEY);
   if (!apiKey.startsWith("re_")) {
     return NextResponse.json(
       { ok: false, message: "Servicio de e-mail no configurado." },
@@ -250,8 +254,8 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: process.env.LEAD_FROM_EMAIL || DEFAULT_FROM,
-        to: [process.env.LEAD_TO_EMAIL || DEFAULT_TO],
+        from: cleanEnv(process.env.LEAD_FROM_EMAIL) || DEFAULT_FROM,
+        to: [cleanEnv(process.env.LEAD_TO_EMAIL) || DEFAULT_TO],
         reply_to: email,
         subject: `Nuevo pedido: ${oneLine(nome)}${empresa ? ` (${oneLine(empresa)})` : ""}`,
         html,
@@ -259,14 +263,25 @@ export async function POST(req: NextRequest) {
       }),
     });
     if (!res.ok) {
+      const errBody = await res.text().catch(() => "");
+      console.error("[send-lead] Resend error:", res.status, errBody);
       return NextResponse.json(
-        { ok: false, message: "No fue posible enviar ahora." },
+        {
+          ok: false,
+          message: "No fue posible enviar ahora.",
+          code: `resend_${res.status}`,
+        },
         { status: 502 },
       );
     }
-  } catch {
+  } catch (err) {
+    console.error("[send-lead] Fetch error:", err);
     return NextResponse.json(
-      { ok: false, message: "No fue posible enviar ahora." },
+      {
+        ok: false,
+        message: "No fue posible enviar ahora.",
+        code: "fetch_error",
+      },
       { status: 502 },
     );
   }
