@@ -256,53 +256,40 @@ export function SiteBehaviors() {
         }
 
         const endpoint = form.dataset.endpoint;
-        let mode = "ok" as "ok" | "wa";
         if (submit) submit.disabled = true;
 
-        const openWhats = () => {
-          const lines = [
-            "¡Hola! Vengo del sitio de Mintcode y tengo interés en conversar.",
-            `Nombre: ${data.nome}`,
-            data.empresa ? `Empresa: ${data.empresa}` : "",
-            servicosList.length ? `Interés: ${servicosList.join(", ")}` : "",
-            data.email ? `E-mail: ${data.email}` : "",
-            data.whatsapp ? `WhatsApp: +${String(data.whatsapp).replace(/^\+/, "")}` : "",
-            data.mensagem ? `Mensaje: ${data.mensagem}` : "",
-          ].filter(Boolean);
-          window.open(
-            `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(lines.join("\n"))}`,
-            "_blank",
-            "noopener",
-          );
-          mode = "wa";
-        };
-
         try {
-          if (endpoint) {
-            let r: Response | null = null;
-            try {
-              r = await fetch(endpoint, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-                body: JSON.stringify(data),
-              });
-            } catch {
-              /* sin red o servidor no disponible: abre WhatsApp */
-            }
-            if (r?.status === 429 || r?.status === 422) {
-              throw new Error(String(r.status));
-            }
-            if (!r?.ok) openWhats();
-          } else {
-            openWhats();
+          if (!endpoint) {
+            throw new Error("missing_endpoint");
           }
-        } catch {
-          showErr(
-            "No fue posible enviar ahora. Intenta de nuevo o escríbenos por WhatsApp.",
-          );
+          const r = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+          if (!r.ok) {
+            let serverMsg = "";
+            try {
+              const body = (await r.json()) as { message?: string };
+              if (typeof body?.message === "string") serverMsg = body.message;
+            } catch {
+              /* ignore non-JSON error body */
+            }
+            throw new Error(serverMsg || String(r.status));
+          }
+        } catch (err) {
+          const msg =
+            err instanceof Error &&
+            err.message &&
+            !/^\d+$/.test(err.message) &&
+            err.message !== "missing_endpoint" &&
+            err.message !== "Failed to fetch"
+              ? err.message
+              : "No fue posible enviar ahora. Intenta de nuevo o escríbenos por WhatsApp.";
+          showErr(msg);
           track("form_error", { form_id: formId(form), error_field: "envio" });
           if (submit) submit.disabled = false;
           return;
@@ -311,7 +298,7 @@ export function SiteBehaviors() {
         if (submit) submit.disabled = false;
         track("generate_lead", {
           form_id: formId(form),
-          lead_method: mode === "wa" ? "whatsapp" : "formulario",
+          lead_method: "formulario",
           service_interest: servicosList.join(", "),
         });
         form.reset();
