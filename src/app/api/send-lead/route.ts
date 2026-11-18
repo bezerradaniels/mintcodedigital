@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DEFAULT_TO = "daniel.ddsb@gmail.com";
-const DEFAULT_FROM = "Mintcode <contato@mintcode.com.br>";
+const DEFAULT_FROM = "Mintcode <hola@mintcode.digital>";
 const MIN_SECONDS = 3;
 const IP_INTERVAL_MS = 20_000;
 const IP_PER_HOUR = 10;
@@ -59,57 +59,61 @@ function renderEmailHtml(vars: {
   const rowsHtml = vars.rows
     .map(
       ([label, value]) => `<tr>
-      <td valign="top" width="30%" style="padding:13px 12px 13px 0;border-top:1px solid #E6EAF0;font-size:12px;line-height:1.5;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#566070;">${h(label)}</td>
-      <td valign="top" style="padding:12px 0;border-top:1px solid #E6EAF0;font-size:16px;line-height:1.5;color:#0B0D12;word-break:break-word;">${value}</td>
+      <td valign="top" width="110" style="padding:10px 12px 10px 0;border-bottom:1px solid #ECEEF2;font-size:12px;line-height:1.5;font-weight:500;color:#6B7280;">${h(label)}</td>
+      <td valign="top" style="padding:10px 0;border-bottom:1px solid #ECEEF2;font-size:14px;line-height:1.5;color:#111827;word-break:break-word;">${value}</td>
     </tr>`,
     )
     .join("");
+
+  const font =
+    "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
   return `<!doctype html>
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nuevo pedido de contacto</title>
+<title>Nuevo lead</title>
 </head>
-<body style="margin:0;padding:0;background-color:#F4F6FA;-webkit-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background-color:#F8F9FB;-webkit-text-size-adjust:100%;font-family:${font};">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;mso-hide:all;">${h(vars.preheader)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F4F6FA" style="background-color:#F4F6FA;">
-<tr><td align="center" style="padding:40px 16px 48px;">
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
-    <tr><td style="padding:0 6px 22px;font-family:'Google Sans',Arial,Helvetica,sans-serif;font-size:24px;line-height:1;font-weight:700;letter-spacing:-0.03em;color:#0B0D12;">Mintcode</td></tr>
-    <tr><td bgcolor="#DCE3EE" style="border-radius:26px;padding:2px;background-color:#DCE3EE;background-image:linear-gradient(135deg,#BDEAAA 0%,#B3CDFB 28%,#CDBFFB 52%,#F8B7D2 78%,#FFD9A0 100%);">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="background-color:#FFFFFF;border-radius:24px;">
-        <tr><td style="padding:38px 38px 6px;font-family:'Google Sans',Arial,Helvetica,sans-serif;">
-          <div style="font-size:12px;line-height:1.2;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#566070;">Nuevo pedido de contacto</div>
-          <div style="padding-top:14px;font-size:34px;line-height:1.08;font-weight:500;letter-spacing:-0.035em;color:#0B0D12;">${h(vars.nome)}</div>
-          ${vars.empresa ? `<div style="padding-top:6px;font-size:18px;line-height:1.3;color:#566070;">${h(vars.empresa)}</div>` : ""}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F8F9FB" style="background-color:#F8F9FB;">
+<tr><td align="center" style="padding:36px 16px;">
+  <table role="presentation" width="540" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:540px;">
+    <tr><td style="padding:0 4px 16px;font-family:${font};font-size:14px;font-weight:600;letter-spacing:-0.01em;color:#111827;">
+      Mintcode <span style="color:#9CA3AF;font-weight:400;">&middot; Nuevo lead</span>
+    </td></tr>
+    <tr><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:28px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:${font};">
+        <tr><td style="padding-bottom:18px;">
+          <div style="font-size:22px;line-height:1.25;font-weight:600;letter-spacing:-0.02em;color:#111827;">${h(vars.nome)}</div>
+          ${vars.empresa ? `<div style="padding-top:4px;font-size:14px;line-height:1.4;color:#6B7280;">${h(vars.empresa)}</div>` : ""}
         </td></tr>
-        <tr><td style="padding:24px 38px 0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'Google Sans',Arial,Helvetica,sans-serif;">
+        <tr><td>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #ECEEF2;font-family:${font};">
             ${rowsHtml}
           </table>
         </td></tr>
         ${
           vars.mensagem
-            ? `<tr><td style="padding:14px 38px 0;font-family:'Google Sans',Arial,Helvetica,sans-serif;">
-          <div style="font-size:12px;line-height:1.5;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#566070;padding-bottom:10px;">Mensaje</div>
-          <div style="background-color:#F6F8FB;border:1px solid #E6EAF0;border-radius:16px;padding:18px 20px;font-size:16px;line-height:1.6;color:#2A313C;word-break:break-word;">${h(vars.mensagem).replace(/\n/g, "<br>")}</div>
+            ? `<tr><td style="padding-top:18px;">
+          <div style="font-size:12px;line-height:1.5;font-weight:500;color:#6B7280;padding-bottom:6px;">Mensaje</div>
+          <div style="border-left:2px solid #D1D5DB;padding:2px 0 2px 12px;font-size:14px;line-height:1.6;color:#374151;word-break:break-word;">${h(vars.mensagem).replace(/\n/g, "<br>")}</div>
         </td></tr>`
             : ""
         }
-        <tr><td style="padding:30px 38px 36px;font-family:'Google Sans',Arial,Helvetica,sans-serif;">
+        <tr><td style="padding-top:24px;">
           ${
             vars.waLink
-              ? `<span style="display:inline-block;margin:0 10px 10px 0;padding:1.5px;border-radius:999px;background-color:#000000;background-image:linear-gradient(90deg,#7ED957 0%,#4C8DF6 30%,#8B6CF6 56%,#F0629A 82%,#FFB547 100%);"><a href="${h(vars.waLink)}" style="display:block;background-color:#000000;color:#FFFFFF;text-decoration:none;font-size:15px;line-height:1;font-weight:600;padding:15px 26px;border-radius:999px;white-space:nowrap;">Responder en WhatsApp&nbsp;&rarr;</a></span>`
+              ? `<a href="${h(vars.waLink)}" style="display:inline-block;margin:0 8px 8px 0;background-color:#111827;color:#FFFFFF;text-decoration:none;font-size:13px;line-height:1;font-weight:500;padding:11px 18px;border-radius:8px;white-space:nowrap;">WhatsApp &rarr;</a>`
               : ""
           }
-          <span style="display:inline-block;margin:0 10px 10px 0;padding:1.5px;border-radius:999px;background-color:#000000;background-image:linear-gradient(90deg,#7ED957 0%,#4C8DF6 30%,#8B6CF6 56%,#F0629A 82%,#FFB547 100%);"><a href="${h(vars.mailto)}" style="display:block;background-color:#000000;color:#FFFFFF;text-decoration:none;font-size:15px;line-height:1;font-weight:600;padding:15px 26px;border-radius:999px;white-space:nowrap;">Responder por e-mail&nbsp;&rarr;</a></span>
+          <a href="${h(vars.mailto)}" style="display:inline-block;margin:0 8px 8px 0;background-color:#FFFFFF;color:#111827;border:1px solid #D1D5DB;text-decoration:none;font-size:13px;line-height:1;font-weight:500;padding:10px 16px;border-radius:8px;white-space:nowrap;">Responder por e-mail</a>
         </td></tr>
       </table>
     </td></tr>
-    <tr><td style="padding:22px 10px 0;font-family:'Google Sans',Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B7585;text-align:center;">
-      Recibido el ${h(vars.when)} desde el formulario del sitio${vars.pageUrl ? ` &middot; ${h(vars.pageUrl)}` : ""}.${vars.utm ? `<br>Origen: ${h(vars.utm)}` : ""}
+    <tr><td style="padding:16px 4px 0;font-family:${font};font-size:12px;line-height:1.6;color:#9CA3AF;">
+      ${h(vars.when)}${vars.pageUrl ? ` &middot; ${h(vars.pageUrl)}` : ""}${vars.utm ? `<br>${h(vars.utm)}` : ""}
     </td></tr>
   </table>
 </td></tr>
