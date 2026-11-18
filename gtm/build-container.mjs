@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
-const GA4_ID = 'G-QN2ZEF2E3S';
-const GTM_ID = 'GTM-MMT79RX3';
+const GA4_ID = 'G-97RQ2P9J91';
+const GTM_ID = 'GTM-TDFVMKJH';
 const PLACEHOLDER = {
   adsId: 'AW-XXXXXXXXXX',
   adsLabelLead: 'LABEL_LEAD',
@@ -45,6 +45,8 @@ const EVENTS = [
   { name: 'academy_complete', gatilho: 'Clique em "Marcar como concluído"', onde: 'Artigos da Academy', params: ['item_id', 'trilha'] },
   { name: 'faq_open', gatilho: 'Abertura de uma pergunta frequente (ação do usuário)', onde: 'Páginas de serviço', params: ['faq_question'] },
   { name: 'menu_toggle', gatilho: 'Abrir/fechar o menu no celular', onde: 'Header (mobile)', params: ['menu_state'] },
+  { name: 'link_click', gatilho: 'Clique nos demais links de navegação, rodapé, blog e cards', onde: 'Todo o site', params: ['link_text', 'link_url', 'link_location'] },
+  { name: 'scroll_depth', gatilho: 'Rolagem da página atingindo 25%, 50%, 75% e 90%', onde: 'Todo o site (por página)', params: ['percent_scrolled', 'page_path'] },
 ];
 
 const ADS = {

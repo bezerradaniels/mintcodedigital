@@ -10,13 +10,13 @@ Gerado por `gtm/build-container.mjs` (a mesma especificação gera o JSON do GTM
 
 ## Instalação
 
-1. Abra o container **Web** `GTM-MMT79RX3` em tagmanager.google.com (o site já carrega esse ID).
+1. Abra o container **Web** `GTM-TDFVMKJH` em tagmanager.google.com (o site já carrega esse ID).
 2. **Admin → Importar contêiner** → escolha `gtm/mintcode-gtm-container.json` → espaço de trabalho existente → **Mesclar** (use *Substituir* só em container vazio).
 3. Em **Variáveis**, edite os 4 placeholders:
    - `CONST - Google Ads Conversion ID` → `AW-XXXXXXXXXX` (a ID da conta, em Google Ads → Metas → Conversões → Detalhes da tag)
    - `CONST - Google Ads Label - Lead` e `CONST - Google Ads Label - WhatsApp` → rótulos das duas ações de conversão (crie-as no Google Ads como *Site → Enviar formulário de lead* e *Site → Contato*)
    - `CONST - Meta Pixel ID` → ID do pixel no Gerenciador de Eventos da Meta
-   - `CONST - GA4 Measurement ID` já vem como `G-QN2ZEF2E3S`.
+   - `CONST - GA4 Measurement ID` já vem como `G-97RQ2P9J91`.
 4. O ID já está em `src/content/site.mjs` (`analytics.gtmId`); para trocá-lo, rode `npm run build` e publique o `dist/`.
 5. No GTM, use **Visualizar** (modo Preview) para confirmar os disparos e então **Enviar** a versão.
 6. No GA4: **Admin → Eventos** → marque como *evento principal* os da coluna "Principal"; em **Definições personalizadas** registre como dimensões os parâmetros que quiser usar em relatórios (ex.: `cta_location`, `service_name`, `project_name`, `form_id`, `lead_method`).
@@ -45,6 +45,8 @@ Gerado por `gtm/build-container.mjs` (a mesma especificação gera o JSON do GTM
 | `academy_complete` | Clique em "Marcar como concluído" | Artigos da Academy | ✓ |  |  |  |
 | `faq_open` | Abertura de uma pergunta frequente (ação do usuário) | Páginas de serviço | ✓ |  |  |  |
 | `menu_toggle` | Abrir/fechar o menu no celular | Header (mobile) | ✓ |  |  |  |
+| `link_click` | Clique nos demais links de navegação, rodapé, blog e cards | Todo o site | ✓ |  |  |  |
+| `scroll_depth` | Rolagem da página atingindo 25%, 50%, 75% e 90% | Todo o site (por página) | ✓ |  |  |  |
 
 Além dos eventos: **GA4** envia `page_view` pela Google tag; **Meta** envia `PageView` no pixel base; **Google Ads** carrega o Conversion Linker em todas as páginas.
 
@@ -72,6 +74,8 @@ Além dos eventos: **GA4** envia `page_view` pela Google tag; **Meta** envia `Pa
 | `academy_complete` | `item_id`, `trilha` |
 | `faq_open` | `faq_question` |
 | `menu_toggle` | `menu_state` |
+| `link_click` | `link_text`, `link_url`, `link_location` |
+| `scroll_depth` | `percent_scrolled`, `page_path` |
 
 Valores de `cta_location` / `link_location`: `header`, `hero`, `faixa_cta`, `rodape`, `formulario`, `canais_contato`, o id da seção (`servicos`, `portfolio`, `contato`…) ou `conteudo`.
 Valores de `lead_method`: `formulario` (enviado ao endpoint) ou `whatsapp` (formulário que abriu o WhatsApp com a mensagem pronta; nesse caso o envio da mensagem no WhatsApp não é visível ao site).

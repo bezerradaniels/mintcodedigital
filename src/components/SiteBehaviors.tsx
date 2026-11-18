@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -17,6 +17,7 @@ const SECTION_MAP: Record<string, string> = {
 
 export function SiteBehaviors() {
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) =>
@@ -313,13 +314,13 @@ export function SiteBehaviors() {
           lead_method: mode === "wa" ? "whatsapp" : "formulario",
           service_interest: servicosList.join(", "),
         });
-        if (ok) {
-          $$("[data-ok]", ok).forEach((n) => (n.hidden = mode !== "ok"));
-          $$("[data-wa]", ok).forEach((n) => (n.hidden = mode !== "wa"));
-          form.hidden = true;
-          ok.hidden = false;
-          ok.focus();
+        form.reset();
+        const parentModal = form.closest("dialog") as HTMLDialogElement | null;
+        if (parentModal?.open) {
+          parentModal.close();
+          document.documentElement.classList.remove("modal-open");
         }
+        router.push("/gracias");
       });
 
       if (ok) {
@@ -738,7 +739,11 @@ export function SiteBehaviors() {
             cta_destination: href,
           });
         }
-        return;
+        return track("link_click", {
+          link_text: text,
+          link_url: href,
+          link_location: place,
+        });
       }
 
       if (el.matches("[data-filter]"))
@@ -782,10 +787,30 @@ export function SiteBehaviors() {
       true,
     );
 
+    /* ------------------------------------------- Seguimiento de scroll (GTM) */
+    const scrollMilestones = [25, 50, 75, 90];
+    const firedScroll = new Set<number>();
+    const checkScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      const pct = Math.min(100, Math.round((window.scrollY / max) * 100));
+      for (const m of scrollMilestones) {
+        if (pct >= m && !firedScroll.has(m)) {
+          firedScroll.add(m);
+          track("scroll_depth", {
+            percent_scrolled: m,
+            page_path: location.pathname,
+          });
+        }
+      }
+    };
+    on(window, "scroll", checkScroll, { passive: true });
+
     return () => {
       cleanups.forEach((fn) => fn());
     };
-  }, [pathname]);
+  }, [pathname, router]);
 
   return null;
 }

@@ -944,3 +944,21 @@ export const notFoundPageContent = () => ({
 </section>`,
   schema: [],
 });
+
+export const thanksPageContent = () => ({
+  active: "",
+  main: `<section class="page-hero aurora">
+  <div class="wrap stack-md">
+    <span class="check-big" aria-hidden="true">✓</span>
+    ${eyebrow("Solicitud recibida")}
+    <h1 class="h1">¡Gracias por <span class="grad-text">escribirnos!</span></h1>
+    <p class="lead">Recibimos tus datos correctamente. Muy pronto nos pondremos en contacto por WhatsApp o por el e-mail que informaste, en hasta 1 día hábil.</p>
+    <div class="btn-row">
+      ${btn({ href: "/", label: "Volver al inicio" })}
+      <a class="btn-ghost" href="/servicios">Explorar servicios</a>
+      <a class="btn-ghost" href="https://wa.me/${site.contact.whatsappNumber}" target="_blank" rel="noopener">Hablar por WhatsApp</a>
+    </div>
+  </div>
+</section>`,
+  schema: [],
+});

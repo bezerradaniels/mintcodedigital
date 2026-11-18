@@ -18,10 +18,10 @@ export const site = {
   },
 
   analytics: {
-    // ID del contenedor de Google Tag Manager (mismo del sitio actual).
-    gtmId: "GTM-MMT79RX3",
+    // ID del contenedor de Google Tag Manager.
+    gtmId: "GTM-TDFVMKJH",
     // ID de medición de GA4.
-    ga4Id: "G-QN2ZEF2E3S",
+    ga4Id: "G-97RQ2P9J91",
   },
 
   forms: {
